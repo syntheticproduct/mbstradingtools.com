@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!-- MBS Trading Tools — 18-month vision artifact. Concept site, not live. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBS Trading Tools — Desk software for agency MBS</title>
+<style>
+  :root{
+    --bg:#0b0f17; --bg2:#0f1522; --panel:#131b2c; --line:#1f2a40;
+    --txt:#dce3ee; --dim:#8b97ab; --faint:#5a6679;
+    --acc:#36d399; --amber:#e8b339; --red:#e0635f; --blue:#5b8def;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Consolas,Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.55;font-size:16px}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono)}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.5px}
+  .logo .tick{color:var(--acc)}
+  .nav-links{display:flex;gap:26px;font-size:13.5px;color:var(--dim)}
+  .nav-links a:hover{color:var(--txt)}
+  .nav-cta{font-family:var(--mono);font-size:12.5px;border:1px solid var(--acc);color:var(--acc);padding:7px 14px;border-radius:4px}
+  .nav-cta:hover{background:var(--acc);color:#06281c}
+
+  /* hero */
+  .hero{padding:84px 0 64px;border-bottom:1px solid var(--line);background:
+    radial-gradient(1100px 420px at 75% -10%, rgba(54,211,153,.07), transparent 60%), var(--bg)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--acc);text-transform:uppercase;margin-bottom:18px}
+  h1{font-size:44px;line-height:1.12;font-weight:700;letter-spacing:-.5px}
+  .hero p.sub{margin-top:18px;font-size:18px;color:var(--dim);max-width:46ch}
+  .hero-ctas{margin-top:30px;display:flex;gap:14px}
+  .btn{font-family:var(--mono);font-size:13.5px;padding:11px 20px;border-radius:4px;border:1px solid var(--line);color:var(--txt)}
+  .btn.primary{background:var(--acc);border-color:var(--acc);color:#06281c;font-weight:700}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn:hover{border-color:var(--dim)}
+
+  /* terminal mock */
+  .term{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);font-family:var(--mono);font-size:11.5px}
+  .term-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--bg2);border-bottom:1px solid var(--line)}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .term-title{margin-left:8px;color:var(--faint);font-size:11px}
+  .term-tabs{display:flex;border-bottom:1px solid var(--line)}
+  .term-tab{padding:8px 16px;color:var(--faint);font-size:11px;border-right:1px solid var(--line)}
+  .term-tab.on{color:var(--acc);background:var(--bg)}
+  table.grid{width:100%;border-collapse:collapse}
+  table.grid th{color:var(--faint);font-weight:400;text-align:right;padding:7px 12px;border-bottom:1px solid var(--line);font-size:10.5px;letter-spacing:.4px}
+  table.grid th:first-child,table.grid td:first-child{text-align:left}
+  table.grid td{padding:6.5px 12px;text-align:right;border-bottom:1px solid rgba(31,42,64,.55);color:var(--txt)}
+  .up{color:var(--acc)} .dn{color:var(--red)} .am{color:var(--amber)} .dim{color:var(--dim)}
+  .term-foot{display:flex;justify-content:space-between;padding:8px 14px;color:var(--faint);font-size:10.5px;background:var(--bg2)}
+
+  /* stat bar */
+  .stats{border-bottom:1px solid var(--line);background:var(--bg2)}
+  .stats-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
+  .stat{padding:26px 20px;text-align:center}
+  .stat b{display:block;font-family:var(--mono);font-size:26px;color:var(--txt);font-weight:700}
+  .stat span{font-size:12.5px;color:var(--faint);letter-spacing:.4px}
+
+  /* sections */
+  section{padding:76px 0;border-bottom:1px solid var(--line)}
+  .sec-kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--acc);text-transform:uppercase}
+  h2{font-size:30px;font-weight:700;margin-top:10px;letter-spacing:-.3px}
+  .sec-lede{color:var(--dim);margin-top:12px;max-width:62ch;font-size:16.5px}
+
+  /* products */
+  .prods{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:42px}
+  .prod{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:28px}
+  .prod-top{display:flex;justify-content:space-between;align-items:baseline}
+  .prod h3{font-family:var(--mono);font-size:18px;color:var(--txt)}
+  .prod h3 em{font-style:normal;color:var(--faint);font-size:13px;margin-left:8px}
+  .badge{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
+  .badge.live{background:rgba(54,211,153,.12);color:var(--acc);border:1px solid rgba(54,211,153,.35)}
+  .badge.pilot{background:rgba(232,179,57,.1);color:var(--amber);border:1px solid rgba(232,179,57,.35)}
+  .badge.free{background:rgba(91,141,239,.1);color:var(--blue);border:1px solid rgba(91,141,239,.35)}
+  .prod p{color:var(--dim);font-size:14.5px;margin-top:14px}
+  .prod ul{margin:16px 0 0;list-style:none}
+  .prod li{font-size:13.5px;color:var(--txt);padding:5px 0 5px 18px;position:relative}
+  .prod li::before{content:"·";color:var(--acc);position:absolute;left:2px;font-weight:700}
+
+  /* services */
+  .svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:42px}
+  .svc{border:1px solid var(--line);border-radius:8px;padding:26px;background:var(--bg2)}
+  .svc .n{font-family:var(--mono);color:var(--faint);font-size:12px}
+  .svc h3{font-size:16.5px;margin-top:10px}
+  .svc p{color:var(--dim);font-size:14px;margin-top:10px}
+
+  /* clients */
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:42px}
+  .case{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px;display:flex;flex-direction:column}
+  .case .who{font-family:var(--mono);font-size:12px;color:var(--acc);letter-spacing:.5px}
+  .case p{color:var(--dim);font-size:14px;margin-top:12px;flex:1}
+  .case .num{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .case .num b{font-family:var(--mono);font-size:22px;color:var(--txt)}
+  .case .num span{display:block;font-size:12px;color:var(--faint);margin-top:2px}
+
+  /* team */
+  .team{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:42px}
+  .person{border:1px solid var(--line);border-radius:8px;padding:24px;background:var(--bg2)}
+  .person .role{font-family:var(--mono);font-size:12.5px;color:var(--acc)}
+  .person p{font-size:13.5px;color:var(--dim);margin-top:8px}
+
+  /* founder */
+  .founder{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:34px;margin-top:42px}
+  .founder h3{font-family:var(--mono);font-size:14px;color:var(--faint);letter-spacing:1px;text-transform:uppercase}
+  .founder ul{list-style:none;margin-top:18px}
+  .founder li{padding:10px 0 10px 22px;position:relative;font-size:15px;color:var(--txt);border-bottom:1px solid rgba(31,42,64,.5)}
+  .founder li:last-child{border-bottom:none}
+  .founder li::before{content:"—";position:absolute;left:0;color:var(--acc)}
+  .founder li b{font-family:var(--mono);color:var(--acc);font-weight:600}
+
+  /* contact */
+  .contact{text-align:center;padding:90px 0}
+  .contact h2{font-size:32px}
+  .contact p{color:var(--dim);margin-top:14px}
+  .contact .btn{margin-top:28px;display:inline-block}
+
+  footer{padding:34px 0;color:var(--faint);font-size:12.5px;font-family:var(--mono);display:flex;justify-content:space-between}
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr}
+    .prods,.svcs,.cases,.team{grid-template-columns:1fr}
+    .stats-in{grid-template-columns:repeat(2,1fr)}
+    h1{font-size:34px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="logo"><span class="tick">▮</span> MBS TRADING TOOLS</div>
+    <div class="nav-links">
+      <a href="#products">Products</a>
+      <a href="#services">Services</a>
+      <a href="#clients">Clients</a>
+      <a href="#team">Team</a>
+      <a href="#founder">Background</a>
+    </div>
+    <a class="nav-cta" href="#contact">Talk to the desk</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker">Desk software · Agency MBS</div>
+      <h1>The software agency MBS desks run on.</h1>
+      <p class="sub">Blotter, positions, pricing, P&amp;L, sales flow. We built these systems at a primary dealer. Now we build them for desks that don't have a 200-person technology floor.</p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="#products">View products</a>
+        <a class="btn" href="#services">Build engagements</a>
+      </div>
+    </div>
+    <div class="term">
+      <div class="term-bar">
+        <span class="dot" style="background:#e0635f"></span><span class="dot" style="background:#e8b339"></span><span class="dot" style="background:#36d399"></span>
+        <span class="term-title">LEDGER · positions · UMBS 30yr</span>
+      </div>
+      <div class="term-tabs">
+        <div class="term-tab on">POSITIONS</div><div class="term-tab">BLOTTER</div><div class="term-tab">ROLL</div><div class="term-tab">ALLOC</div>
+      </div>
+      <table class="grid">
+        <tr><th>CPN</th><th>NET (MM)</th><th>TBA/POOL</th><th>PX</th><th>DV01</th><th>DAY P&amp;L</th></tr>
+        <tr><td>UMBS 4.5</td><td>+125.0</td><td class="dim">TBA Jul</td><td>97-22+</td><td>78.4</td><td class="up">+41,250</td></tr>
+        <tr><td>UMBS 5.0</td><td>+340.0</td><td class="dim">TBA Jul</td><td>99-08</td><td>189.1</td><td class="up">+112,400</td></tr>
+        <tr><td>UMBS 5.5</td><td>−210.0</td><td class="dim">TBA Jun</td><td>100-26</td><td>−102.7</td><td class="dn">−38,900</td></tr>
+        <tr><td>UMBS 5.5</td><td>+86.2</td><td class="am">SPEC LLB</td><td>101-14</td><td>41.9</td><td class="up">+9,180</td></tr>
+        <tr><td>G2 6.0</td><td>+44.0</td><td class="dim">POOL</td><td>102-03+</td><td>19.8</td><td class="dn">−2,340</td></tr>
+        <tr><td class="dim">HEDGE</td><td>−590.0</td><td class="dim">TY/FV</td><td class="dim">—</td><td>−205.5</td><td class="dn">−61,700</td></tr>
+      </table>
+      <div class="term-foot">
+        <span>NET DV01 <span class="up">+21.0</span> · ROLL JUN/JUL <span class="am">SPECIAL −212bp</span></span>
+        <span>EPN ✓ · FICC ✓ · 16:42:08</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap stats-in">
+    <div class="stat"><b>6</b><span>desks in production</span></div>
+    <div class="stat"><b>4</b><span>products</span></div>
+    <div class="stat"><b>9</b><span>people</span></div>
+    <div class="stat"><b>$31B</b><span>positions on platform</span></div>
+  </div>
+</div>
+
+<section id="products">
+  <div class="wrap">
+    <div class="sec-kicker">Products</div>
+    <h2>Four systems. One data model.</h2>
+    <p class="sec-lede">Each product runs standalone. Together they share one position and flow database, so the blotter, the P&amp;L, and the salesperson's screen never disagree.</p>
+    <div class="prods">
+      <div class="prod">
+        <div class="prod-top"><h3>LEDGER <em>blotter · positions</em></h3><span class="badge live">IN PRODUCTION · 6 DESKS</span></div>
+        <p>The system of record. Trade capture, real-time positions, TBA allocation workflow. Replaces the position spreadsheet before it breaks in a fast market.</p>
+        <ul>
+          <li>Positions by coupon, vintage, TBA vs. pool vs. hedge</li>
+          <li>48-hour-day allocation: EPN in, good-delivery checks, variance handled</li>
+          <li>FICC netting and fails tracking built in</li>
+        </ul>
+      </div>
+      <div class="prod">
+        <div class="prod-top"><h3>ENGINE <em>pricing · P&amp;L · risk</em></h3><span class="badge live">IN PRODUCTION · 3 DESKS</span></div>
+        <p>Intraday P&amp;L and pricing on Ledger positions. Attribution that says why: carry, curve, basis, prepay. Feeds your risk stack. It does not pretend to be your risk stack.</p>
+        <ul>
+          <li>Intraday P&amp;L with attribution traders accept</li>
+          <li>Pluggable models: Yield Book, AD&amp;Co, internal</li>
+          <li>Limits and exposure feeds to firm risk, real time</li>
+        </ul>
+      </div>
+      <div class="prod">
+        <div class="prod-top"><h3>FLOW <em>sales CRM</em></h3><span class="badge pilot">PILOT · 2 DEALERS</span></div>
+        <p>A CRM built around trade history, not contact notes. Every print, every axe, every client inquiry in one place. The matching engine says which client should see which bond.</p>
+        <ul>
+          <li>Client flow history as the core object</li>
+          <li>Axe-to-client matching from past flow</li>
+          <li>Runs generated and distributed automatically</li>
+        </ul>
+      </div>
+      <div class="prod">
+        <div class="prod-top"><h3>ROLL <em>financing analytics</em></h3><span class="badge free">FREE TOOL + SUBSCRIPTION</span></div>
+        <p>Roll breakeven and implied financing across the coupon stack. The single-roll calculator is public and free. The live monitor across all coupons is the product.</p>
+        <ul>
+          <li>Breakeven drop, implied repo, verdict, carry breakdown</li>
+          <li>Convention-correct: 30/360 coupon, act/360 financing</li>
+          <li>No fabricated levels. Your inputs, audited arithmetic</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-kicker">Services</div>
+    <h2>We also build to spec.</h2>
+    <p class="sec-lede">Most engagements start as a build and end as a subscription. We deliver against deadlines because we have done this under OCC deadlines.</p>
+    <div class="svcs">
+      <div class="svc">
+        <div class="n">01</div>
+        <h3>Desk systems built to order</h3>
+        <p>Blotter, positions, limit monitoring, pricing. Scoped in weeks, delivered in months, documented so your people can run it.</p>
+      </div>
+      <div class="svc">
+        <div class="n">02</div>
+        <h3>Integration</h3>
+        <p>EPN, FICC, TRACE, Tradeweb, internal risk and books-and-records. We speak the protocols and the conventions: 32nds, 48-hour day, good delivery.</p>
+      </div>
+      <div class="svc">
+        <div class="n">03</div>
+        <h3>Off the spreadsheet, without stopping the desk</h3>
+        <p>Parallel-run migration from Excel position management to a system of record. The desk trades through the cutover.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="clients">
+  <div class="wrap">
+    <div class="sec-kicker">Clients</div>
+    <h2>Engagements to date.</h2>
+    <p class="sec-lede">Names withheld. References available on request.</p>
+    <div class="cases">
+      <div class="case">
+        <div class="who">AGENCY MORTGAGE REIT · $4B</div>
+        <p>Replaced spreadsheet position management with Ledger and Engine. Roll decisions now run on platform analytics across the full coupon stack.</p>
+        <div class="num"><b>3 days → 4 hrs</b><span>month-end close</span></div>
+      </div>
+      <div class="case">
+        <div class="who">REGIONAL BROKER-DEALER</div>
+        <p>Flow pilot across nine salespeople. Axe distribution matched to client flow history instead of blast emails.</p>
+        <div class="num"><b>2.1×</b><span>hit rate on runs</span></div>
+      </div>
+      <div class="case">
+        <div class="who">BANK PORTFOLIO DESK</div>
+        <p>Real-time limit monitoring built and delivered against a regulatory deadline. Exposure feeds direct to firm risk.</p>
+        <div class="num"><b>11 weeks</b><span>scope to production</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <div class="sec-kicker">Team</div>
+    <h2>Nine people. All have sat near a desk.</h2>
+    <div class="team">
+      <div class="person">
+        <div class="role">FOUNDER / CEO</div>
+        <p>Built blotter, position, pricing, and risk systems for the securitized-markets floor at Citi. Background below.</p>
+      </div>
+      <div class="person">
+        <div class="role">HEAD OF ENGINEERING</div>
+        <p>Rates e-trading infrastructure at a primary dealer. Owns platform, latency, and uptime.</p>
+      </div>
+      <div class="person">
+        <div class="role">SENIOR QUANT DEVELOPER</div>
+        <p>Prepay and OAS analytics. Owns Engine's model integrations and the validation suite.</p>
+      </div>
+      <div class="person">
+        <div class="role">PRODUCT — TRADING</div>
+        <p>Former agency MBS trader. Owns Ledger and Roll. Decides what traders actually see.</p>
+      </div>
+      <div class="person">
+        <div class="role">PRODUCT — DISTRIBUTION</div>
+        <p>Former fixed-income salesperson. Owns Flow. Decides what salespeople actually use.</p>
+      </div>
+      <div class="person">
+        <div class="role">ENGINEERS × 4</div>
+        <p>Integrations, front end, data. Two from sell-side technology, two from fintech.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="founder">
+  <div class="wrap">
+    <div class="sec-kicker">Background</div>
+    <h2>Why us. Stated plainly.</h2>
+    <div class="founder">
+      <h3>Founder — previously at Citi, securitized markets technology</h3>
+      <ul>
+        <li>Built <b>SPIRIT</b>, the inventory and closing-process platform for the securitized-markets desk. Closing time down <b>83%</b>. Inventory-management time down <b>90%</b>.</li>
+        <li>Delivered the <b>Trading Limit Monitoring System</b>: real-time exposure across <b>$85B+ AUM</b>. Met the OCC deadline. Preserved <b>$2B</b> in annual revenue.</li>
+        <li>Shipped the <b>P&amp;L Engine</b>: intraday P&amp;L, risk, and pricing for traders across <b>13 desks</b>.</li>
+        <li>Automated client bidding and order management with integrated CRM and ML recommendations. Reporting effort down <b>60%</b>.</li>
+        <li>Citi <b>CEO Leadership Award</b>, multiple years.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" style="border-bottom:none">
+  <div class="wrap">
+    <h2>If your desk runs on a spreadsheet, call before it breaks.</h2>
+    <p class="mono" style="font-size:14px">desk@mbstradingtools.com</p>
+    <a class="btn primary" href="mailto:desk@mbstradingtools.com">Talk to the desk</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;width:100%">
+    <span>▮ MBS TRADING TOOLS · NEW YORK</span>
+    <span>© 2027 · Concept</span>
+  </div>
+</footer>
+
+</body>
+</html>
